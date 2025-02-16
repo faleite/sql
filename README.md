@@ -1,4 +1,4 @@
-```
+```markdown
 ███████╗ ██████╗ ██╗     
 ██╔════╝██╔═══██╗██║     
 ███████╗██║   ██║██║     
@@ -8,52 +8,60 @@
 Structured Query Language
 ```
 
-
 ## Index
-* **[O que é SQL e sua importância](#o-que-é-sql-e-sua-importância)**
-* **[As quatro sub-linguagens principais do SQL](#as-quatro-sub-linguagens-principais-do-sql)** 
-* **[Conceitos Essenciais](#conceitos-essenciais)**
-* **[Instalação do MySQL via Docker](#instalação-do-mysql-via-docker)**
-* **[DDL (Data Definition Language)](#briefing)**
-* **[DML (Data Manipulation Language)](#briefing)**
+* **[What is SQL and its Importance](#what-is-sql-and-its-importance)**
+* **[The Four Main SQL Sublanguages](#the-four-main-sql-sublanguages)**
+* **[Essential Concepts](#essential-concepts)**
+* **[MySQL Installation via Docker](#mysql-installation-via-docker)**
+* **[Using mysql from the Command Line](#using-mysql-from-the-command-line)**
+* **[DDL and DML Commands](#ddl-and-dml-commands)**
+  * **[1. Creating and Altering Tables](#1-creating-and-altering-tables)**
+  * **[2. Data Insertion (DML)](#2-data-insertion-dml)**
+  * **[3. Data Queries](#3-data-queries)**
+  * **[4. Creating a Derived Table](#4-creating-a-derived-table)**
+  * **[5. Updating and Deleting Data](#5-updating-and-deleting-data)**
+  * **[6. Advanced Queries](#6-advanced-queries)**
+  * **[7. Working with Clients and Orders](#7-working-with-clients-and-orders)**
+  * **[8. Aggregation Queries and Subqueries](#8-aggregation-queries-and-subqueries)**
 
-## O que é SQL e sua importância
-- **SQL** (Structured Query Language) é uma linguagem para manipulação e processamento de dados em bancos de dados relacionais, criada pela IBM e padronizada pela ANSI em 1986.
-- Apesar dos seus 50 anos, ainda é a linguagem padrão e mais utilizada para interagir com bancos de dados, sendo fundamental para desenvolvedores full stack e backend.
-- **SQL** é compatível com os principais bancos de dados do mercado, como MySQL, Oracle Database, PostgreSQL, SQL Server, SQLite, etc.
+
+## What is SQL and its Importance
+- **SQL** (Structured Query Language) is a language for manipulating and processing data in relational databases, created by IBM and standardized by ANSI in 1986.
+- Despite being 50 years old, it remains the standard language most used to interact with databases, and it is essential for full stack and backend developers.
+- **SQL** is compatible with the major database systems in the market, such as MySQL, Oracle Database, PostgreSQL, SQL Server, SQLite, etc.
 
 [↑ Index ↑](#index)
 
-## As quatro sub-linguagens principais do SQL
-*O SQL é geralmente dividido em quatro sub-linguagens principais:*
+## The Four Main SQL Sublanguages
+*SQL is generally divided into four main sublanguages:*
 
 1. **DDL (Data Definition Language):**  
-   Responsável por definir e modificar a estrutura dos bancos de dados, como criar, alterar ou remover tabelas e outros objetos (ex: `CREATE`, `ALTER`, `DROP`, `TRUNCATE`).
+   Responsible for defining and modifying the structure of databases, such as creating, altering, or dropping tables and other objects (e.g., `CREATE`, `ALTER`, `DROP`, `TRUNCATE`).
 
 2. **DML (Data Manipulation Language):**  
-   Utilizada para manipular os dados propriamente ditos, permitindo inserir, atualizar, excluir e consultar os registros (ex: `INSERT`, `UPDATE`, `DELETE`, `SELECT`).
+   Used to manipulate the actual data, allowing the insertion, updating, deletion, and querying of records (e.g., `INSERT`, `UPDATE`, `DELETE`, `SELECT`).  
    **DQL (Data Query Language):**  
-	Subconjunto da DML que se refere apenas à consulta de dados, através do comando `SELECT`.
+   A subset of DML that is solely concerned with data querying, using the `SELECT` command.
 
 3. **DCL (Data Control Language):**  
-   Utilizada para controlar o acesso aos dados e permissões no banco de dados (ex: `GRANT`, `REVOKE`, `DENY`).
+   Used to control access to data and permissions in the database (e.g., `GRANT`, `REVOKE`, `DENY`).
 
 4. **TCL (Transaction Control Language):**  
-   Gerencia as transações no banco de dados, garantindo a integridade dos dados através de comandos que controlam o início, confirmação ou cancelamento de transações (ex: `COMMIT`, `ROLLBACK`, `BEGIN TRANSACTION`).
+   Manages transactions in the database, ensuring data integrity through commands that control the beginning, commitment, or rollback of transactions (e.g., `COMMIT`, `ROLLBACK`, `BEGIN TRANSACTION`).
 
-*Essas divisões ajudam a organizar as operações que podemos realizar sobre um banco de dados, tornando o gerenciamento e manipulação de dados mais estruturados e seguros.*
+*These divisions help organize the operations we can perform on a database, making data management and manipulation more structured and secure.*
 
 [↑ Index ↑](#index)
 
-## Conceitos Essenciais
-- **Chave Primária (Primary Key):** Coluna(s) que identificam exclusivamente cada linha em uma tabela.
-- **Chave Estrangeira (Foreign Key):** Coluna(s) que estabelecem uma relação entre duas tabelas, garantindo a integridade referencial.
-- **Índice (Index):** Estrutura que acelera a busca de registros em uma tabela.
+## Essential Concepts
+- **Primary Key:** Column(s) that uniquely identify each row in a table.
+- **Foreign Key:** Column(s) that establish a relationship between two tables, ensuring referential integrity.
+- **Index:** A structure that speeds up record lookup in a table.
 
-## Instalação do MySQL via Docker
-- Baixar imagem **mysql**: `$ docker pull mysql:latest`
-- Criar volume de dados: `$ docker volume create learn-sql-data`
-- Criar container / Executar container:
+## MySQL Installation via Docker
+- Pull the **mysql** image: `$ docker pull mysql:latest`
+- Create a data volume: `$ docker volume create learn-sql-data`
+- Create/Run the container:
 ```bash
 $ docker run -d \
   --name learn-sql \
@@ -62,101 +70,100 @@ $ docker run -d \
   -v learn-sql-data:/var/lib/mysql \
   mysql:latest
 ```
-- **Explicação:**
-  - `$ docker run -d` --> *modo detached (em segundo plano)*
-  - `--name learn-sql` --> *nome do container*
-  - `-e MYSQL_ROOT_PASSWORD=sql` --> *variável de ambiente*
-  - `-p 3306:3306` --> *porta do container*
-  - `-v learn-sql-data:/var/lib/mysql` --> *volume de dados*
-  - `mysql:latest` --> *imagem*
-- Acessar o container: `$ docker exec -it learn-sql bash`
-- Parar o container: `$ docker stop learn-sql`
-- Verificar os containers: `$ docker ps -a`
-- Iniciar o container: `$ docker start learn-sql`
-- Remover o container: `$ docker rm learn-sql`
-- Remover a imagem: `$ docker rmi mysql:latest`
-- Remover o volume: `$ docker volume rm learn-sql-data`
+- **Explanation:**
+  - `$ docker run -d` --> *detached mode (running in the background)*
+  - `--name learn-sql` --> *container name*
+  - `-e MYSQL_ROOT_PASSWORD=sql` --> *environment variable*
+  - `-p 3306:3306` --> *container port mapping*
+  - `-v learn-sql-data:/var/lib/mysql` --> *data volume*
+  - `mysql:latest` --> *image*
+- Access the container: `$ docker exec -it learn-sql bash`
+- Stop the container: `$ docker stop learn-sql`
+- List containers: `$ docker ps -a`
+- Start the container: `$ docker start learn-sql`
+- Remove the container: `$ docker rm learn-sql`
+- Remove the image: `$ docker rmi mysql:latest`
+- Remove the volume: `$ docker volume rm learn-sql-data`
 
-## mysql
-- Acessar o container: `$ docker exec -it learn-sql bash`
-- Acessar o MySQL: `$ mysql -u root -p`
-- **Comandos:**
-  - Criar um banco de dados: `CREATE DATABASE learn_sql;`
-  - Selecionar um banco de dados: `USE learn_sql;`
-  - Listar os bancos de dados: `SHOW DATABASES;`
+## Using mysql from the Command Line
+- Access the container: `$ docker exec -it learn-sql bash`
+- Access MySQL: `$ mysql -u root -p`
+- **Commands:**
+  - Create a database: `CREATE DATABASE learn_sql;`
+  - Select a database: `USE learn_sql;`
+  - List databases: `SHOW DATABASES;`
 
 [↑ Index ↑](#index)
 
-## Comandos DDL e DML
-*Comandos para criar, manipular e consultar dados em um banco de dados MySQL.* 
+## DDL and DML Commands
+*Commands to create, manipulate, and query data in a MySQL database.* 
 
->Você pode executar os comandos abaixo na sua instância do MySQL, \
->seja via linha de comando ou utilizando uma interface gráfica.
+>You can run the commands below on your MySQL instance, whether via the command line or using a graphical interface.
 
-### 1. Criação e Alteração de Tabelas
+### 1. Creating and Altering Tables
 
-#### 1.1 Criação da Tabela `marcas`
+#### 1.1 Creating the Table `marcas`
 ```sql
 CREATE TABLE marcas (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Chave primária
-	nome VARCHAR(100) NOT NULL UNIQUE,     -- Tipo de dado com limite de caracteres e único
+	id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Primary key
+	nome VARCHAR(100) NOT NULL UNIQUE,     -- Data type with a character limit and unique constraint
 	size VARCHAR(100),
 	telefone VARCHAR(15)
-); -- Ponto e vírgula para finalizar a query
+); -- Semicolon to finish the query
 ```
 
-#### 1.2 Criação da Tabela `produtos`
+#### 1.2 Creating the Table `produtos`
 ```sql
 CREATE TABLE produtos (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Chave primária
-	nome VARCHAR(100) NOT NULL,             -- Tipo de dado e limite de caracteres
-	preco REAL,                           -- Tipo de dado com casas decimais
-	estoque INTEGER DEFAULT 0             -- Tipo de dado com valor padrão
-); -- Ponto e vírgula para finalizar a query
+	id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Primary key
+	nome VARCHAR(100) NOT NULL,             -- Data type and character limit
+	preco REAL,                           -- Data type with decimals
+	estoque INTEGER DEFAULT 0             -- Data type with a default value
+); -- Semicolon to finish the query
 ```
 
-#### 1.3 Alterações na Tabela `produtos`
-- **Adicionar uma coluna:**
+#### 1.3 Altering the Table `produtos`
+- **Add a column:**
   ```sql
   ALTER TABLE produtos ADD COLUMN id_marca INT NOT NULL;
   ```
-- **Modificar o tipo de dado da coluna `nome`:**
+- **Modify the data type of the `nome` column:**
   ```sql
   ALTER TABLE produtos MODIFY COLUMN nome VARCHAR(150);
   ```
-- **Adicionar uma chave estrangeira:**
+- **Add a foreign key:**
   ```sql
   ALTER TABLE produtos ADD FOREIGN KEY (id_marca) REFERENCES marcas(id);
   ```
 
-#### 1.4 Outras Operações
-- **Criação da Tabela `controle`:**
+#### 1.4 Other Operations
+- **Creating the Table `controle`:**
   ```sql
   CREATE TABLE controle (
 	  id INTEGER PRIMARY KEY,
 	  data_entrada DATE
   );
   ```
-- **Remover a Tabela `controle`:**
+- **Dropping the Table `controle`:**
   ```sql
   DROP TABLE controle;
-  -- Ou de forma segura:
+  -- Or safely:
   DROP TABLE IF EXISTS controle;
   ```
-- **Criação de um índice na tabela `produtos`:**
+- **Creating an index on the `nome` column of the `produtos` table:**
   ```sql
   CREATE INDEX idx_produtos_nome ON produtos (nome);
   ```
-- **Modificar o nome da coluna `size` para `site` na tabela `marcas`:**
+- **Renaming the column `size` to `site` in the `marcas` table:**
   ```sql
   ALTER TABLE marcas CHANGE COLUMN size site VARCHAR(100);
   ```
 
 ---
 
-## 2. Inserção de Dados (DML)
+## 2. Data Insertion (DML)
 
-#### 2.1 Inserindo Dados na Tabela `marcas`
+#### 2.1 Inserting Data into the `marcas` Table
 ```sql
 INSERT INTO marcas (nome, site, telefone)
 VALUES
@@ -164,14 +171,14 @@ VALUES
 	('JBL', 'http://jbl.com.br', '(11) 88888-2222');
 ```
 
-#### 2.2 Inserindo Dados na Tabela `produtos`
-- **Inserir omitindo a lista de campos:**
+#### 2.2 Inserting Data into the `produtos` Table
+- **Insert without specifying the field list:**
   ```sql
   INSERT INTO produtos
   VALUES
 	  (1, 'Produto 1', 10.5, 100, 1);
   ```
-- **Inserir especificando os campos:**
+- **Insert while specifying the fields:**
   ```sql
   INSERT INTO produtos (nome, preco, estoque, id_marca)
   VALUES
@@ -183,48 +190,48 @@ VALUES
 
 ---
 
-### 3. Consultas de Dados
+### 3. Data Queries
 
-#### 3.1 Seleção de Dados na Tabela `marcas`
-- **Consulta de todos os campos:**
+#### 3.1 Selecting Data from the `marcas` Table
+- **Query all fields:**
   ```sql
   SELECT * FROM marcas;
   ```
-- **Consulta de campos específicos:**
+- **Query specific fields:**
   ```sql
   SELECT id, nome FROM marcas;
   ```
-- **Consulta com filtro WHERE:**
+- **Query with WHERE filter:**
   ```sql
   SELECT id, nome FROM marcas WHERE id = 1;
   SELECT id, nome FROM marcas WHERE id > 1;
   ```
-- **Consulta com filtro combinado (AND):**
+- **Query with combined (AND) filter:**
   ```sql
   SELECT id, nome FROM marcas WHERE id > 1 AND id < 4;
   ```
 
 ---
 
-### 4. Criação de Tabela Derivada
+### 4. Creating a Derived Table
 
-#### 4.1 Criação da Tabela `produtos_apple`
+#### 4.1 Creating the Table `produtos_apple`
 ```sql
 CREATE TABLE produtos_apple (
 	nome VARCHAR(150) NOT NULL,	
 	estoque INTEGER DEFAULT 0
 );
 ```
-- **Inserir dados baseados na tabela `produtos`:**
+- **Insert data based on the `produtos` table:**
   ```sql
   INSERT INTO produtos_apple
   SELECT nome, estoque FROM produtos WHERE id_marca = 1;
   ```
-- **Visualizar os dados:**
+- **View the data:**
   ```sql
   SELECT * FROM produtos_apple;
   ```
-- **Limpar e remover a tabela:**
+- **Clear and drop the table:**
   ```sql
   TRUNCATE TABLE produtos_apple;
   
@@ -233,29 +240,29 @@ CREATE TABLE produtos_apple (
 
 ---
 
-### 5. Atualização e Exclusão de Dados
+### 5. Updating and Deleting Data
 
-#### 5.1 Atualização de Dados na Tabela `produtos`
-- **Atualização do nome de um produto:**
+#### 5.1 Updating Data in the `produtos` Table
+- **Update the name of a product:**
   ```sql
   UPDATE produtos
   SET nome = 'JBL Flip 6 Black'
   WHERE id = 12;
   ```
-- **Atualização do estoque de todos os produtos:**
+- **Update the stock of all products:**
   ```sql
   UPDATE produtos
   SET estoque = estoque + 10;
   ```
-- **Atualização do estoque de um produto específico:**
+- **Update the stock of a specific product:**
   ```sql
   UPDATE produtos
   SET estoque = estoque + 1
   WHERE id = 3;
   ```
 
-#### 5.2 Exclusão de Dados
-- **Exclusão de um produto específico pelo ID:**
+#### 5.2 Deleting Data
+- **Delete a specific product by ID:**
   ```sql
   DELETE FROM produtos
   WHERE id = 1;
@@ -263,10 +270,10 @@ CREATE TABLE produtos_apple (
 
 ---
 
-### 6. Consultas Avançadas
+### 6. Advanced Queries
 
-#### 6.1 Filtros e Ordenação
-- **Produtos com estoque menor que 100 e preço maior que 30:**
+#### 6.1 Filtering and Ordering
+- **Products with stock less than 100 and price greater than 30:**
   ```sql
   SELECT *
   FROM produtos
@@ -274,19 +281,19 @@ CREATE TABLE produtos_apple (
 	  estoque < 100
 	  AND preco > 30;
   ```
-- **Produtos com nome contendo "Flip":**
+- **Products with names containing "Flip":**
   ```sql
   SELECT *
   FROM produtos
   WHERE nome LIKE '%Flip%';
   ```
-- **Produtos ordenados por estoque (crescente):**
+- **Products ordered by stock (ascending):**
   ```sql
   SELECT *
   FROM produtos
   ORDER BY estoque ASC;
   ```
-- **Produtos ordenados por estoque (decrescente) limitando a 2 registros:**
+- **Products ordered by stock (descending) limited to 2 records:**
   ```sql
   SELECT *
   FROM produtos
@@ -296,9 +303,9 @@ CREATE TABLE produtos_apple (
 
 ---
 
-### 7. Trabalhando com Clientes e Pedidos
+### 7. Working with Clients and Orders
 
-#### 7.1 Criação das Tabelas `clientes`, `pedidos` e `itens_pedido`
+#### 7.1 Creating the Tables `clientes`, `pedidos`, and `itens_pedido`
 ```sql
 CREATE TABLE clientes (
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -327,8 +334,8 @@ CREATE TABLE itens_pedido (
 );
 ```
 
-#### 7.2 Inserção de Dados
-- **Clientes:**
+#### 7.2 Inserting Data
+- **Clients:**
   ```sql
   INSERT INTO clientes (nome, email, cidade)
   VALUES
@@ -340,13 +347,13 @@ CREATE TABLE itens_pedido (
 	  ('Maria Oliveira', 'maria@examplecom', 'São Paulo'),
 	  ('José Santos', 'josé@example.com', 'Rio de Janeiro');
   ```
-- **Pedidos:**
+- **Orders:**
   ```sql
   INSERT INTO pedidos (id_cliente, valor_total) VALUES
   (1, 5500.00),
   (2, 3500.00);
   ```
-- **Itens do Pedido:**
+- **Order Items:**
   ```sql
   INSERT INTO itens_pedido (id_pedido, id_produto, quantidade, preco_unitario) VALUES
   (1, 9, 1, 3500.00),
@@ -354,8 +361,8 @@ CREATE TABLE itens_pedido (
   (2, 11, 1, 3500.00);
   ```
 
-#### 7.3 Consultas com JOINs
-- **INNER JOIN entre clientes e pedidos:**
+#### 7.3 Queries with JOINs
+- **INNER JOIN between clients and orders:**
   ```sql
   SELECT
 	  clientes.nome,
@@ -379,7 +386,7 @@ CREATE TABLE itens_pedido (
   FROM clientes
   RIGHT JOIN pedidos ON clientes.id = pedidos.id_cliente;
   ```
-- **FULL JOIN (simulado com UNION):**
+- **FULL JOIN (simulated with UNION):**
   ```sql
   SELECT
 	  clientes.nome,
@@ -398,10 +405,10 @@ CREATE TABLE itens_pedido (
 
 ---
 
-### 8. Consultas com Agregação e Subqueries
+### 8. Aggregation Queries and Subqueries
 
-#### 8.1 Agregações Básicas
-- **Contagem de clientes por cidade:**
+#### 8.1 Basic Aggregations
+- **Count of clients per city:**
   ```sql
   SELECT
 	  cidade,
@@ -409,7 +416,7 @@ CREATE TABLE itens_pedido (
   FROM clientes
   GROUP BY cidade;
   ```
-- **Média de vendas por mês:**
+- **Average sales per month:**
   ```sql
   SELECT
 	  DATE_FORMAT(data_pedido, '%Y-%m') AS mes,
@@ -417,15 +424,15 @@ CREATE TABLE itens_pedido (
   FROM pedidos
   GROUP BY mes;
   ```
-- **Outras funções de agregação:**
+- **Other aggregation functions:**
   ```sql
   SELECT SUM(valor_total)/COUNT(valor_total) FROM pedidos;
   SELECT MAX(valor_total) AS maior_pedido FROM pedidos;
   SELECT MIN(valor_total) AS menor_pedido FROM pedidos;
   ```
 
-#### 8.2 Subquery e Filtragem na Agregação
-- **Consulta com subquery para produtos com estoque menor que a média:**
+#### 8.2 Subqueries and Aggregation Filtering
+- **Query with a subquery for products with stock lower than average:**
   ```sql
   SELECT
 	  nome,
@@ -433,7 +440,7 @@ CREATE TABLE itens_pedido (
   FROM produtos
   WHERE estoque < (SELECT AVG(estoque) FROM produtos);
   ```
-- **Consulta com HAVING para filtrar agregações:**
+- **Query with HAVING to filter aggregations:**
   ```sql
   SELECT
 	  c.cidade,
@@ -447,8 +454,8 @@ CREATE TABLE itens_pedido (
 
 ---
 
-## Study resources
-- [Minicurso Codigo Fonte TV](https://youtu.be/dpanYy8IrcU?si=3a1uI7wQWzXujFqC)
-- > ***Estudar Banco de Dados relacionais***
+## Study Resources
+- [Codigo Fonte TV Mini-Course](https://youtu.be/dpanYy8IrcU?si=3a1uI7wQWzXujFqC)
+- > ***Study Relational Databases***
 
 [↑ Index ↑](#index)
