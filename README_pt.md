@@ -12,6 +12,7 @@ Structured Query Language
 * **[O que é SQL e sua importância](#o-que-é-sql-e-sua-importância)**
 * **[As quatro sub-linguagens principais do SQL](#as-quatro-sub-linguagens-principais-do-sql)** 
 * **[Conceitos Essenciais](#conceitos-essenciais)**
+* **[Instalação do PostgreSQL via Docker](#instalação-do-postgresql-via-docker)**
 * **[Instalação do MySQL via Docker](#instalação-do-mysql-via-docker)**
 * **[Uso do mysql na linha de comando](#uso-do-mysql-na-linha-de-comando)**
 * **[Comandos DDL e DML](#comandos-ddl-e-dml)**
@@ -21,7 +22,7 @@ Structured Query Language
   * **[4. Criação de Tabela Derivada](#4-criação-de-tabela-derivada)**
   * **[5. Atualização e Exclusão de Dados](#5-atualização-e-exclusão-de-dados)**
   * **[6. Consultas Avançadas](#6-consultas-avançadas)**
-  * **[7. Trabalhando com Clientes e Pedidos](#7-trabalhando-com-clientes-e-pedidos)**
+  * **[7. Trabalhando com clientes e Pedidos](#7-trabalhando-com-clientes-e-pedidos)**
   * **[8. Consultas com Agregação e Subqueries](#8-consultas-com-agregação-e-subqueries)**
 
 
@@ -29,6 +30,8 @@ Structured Query Language
 - **SQL** (Structured Query Language) é uma linguagem para manipulação e processamento de dados em bancos de dados relacionais, criada pela IBM e padronizada pela ANSI em 1986.
 - Apesar dos seus 50 anos, ainda é a linguagem padrão e mais utilizada para interagir com bancos de dados, sendo fundamental para desenvolvedores full stack e backend.
 - **SQL** é compatível com os principais bancos de dados do mercado, como MySQL, Oracle Database, PostgreSQL, SQL Server, SQLite, etc.
+- **SQL** é uma linguagem declarativa, ou seja, o programador especifica o que deseja obter, e não como obter, deixando a otimização e execução a cargo do SGBD.
+- **SGBD** significa "Sistema de Gerenciamento de Banco de Dados". É o software responsável por gerenciar, armazenar, recuperar e administrar os dados em um banco de dados, garantindo integridade, segurança e performance nas operações realizadas.
 
 [↑ Index ↑](#index)
 
@@ -58,6 +61,36 @@ Structured Query Language
 - **Chave Estrangeira (Foreign Key):** Coluna(s) que estabelecem uma relação entre duas tabelas, garantindo a integridade referencial.
 - **Índice (Index):** Estrutura que acelera a busca de registros em uma tabela.
 
+## Instalação do PostgreSQL via Docker
+- Baixar imagem **postgres**: `$ docker pull postgres:latest`
+- Criar volume de dados: `$ docker volume create learn-sql-data`
+- Criar container / Executar container:
+```bash
+$ docker run -d \
+  --name learn-sql \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=sql \
+  -p 5432:5432 \
+  -v learn-sql-data:/var/lib/postgresql/data \
+  postgres:latest
+```
+
+## Uso do postgres na linha de comando
+- Acessar o container: `$ docker exec -it learn-sql bash`
+- Acessar o PostgreSQL: `$ psql -U postgres`
+- Listar os bancos de dados: `\l`
+- Criar um banco de dados: `CREATE DATABASE learn_sql;`
+- Selecionar um banco de dados: `\c learn_sql;`
+- Listar as tabelas: `\dt`
+- Sair do PostgreSQL: `\q`
+- **Comandos Docker:**
+  - Parar o container: `$ docker stop learn-sql`
+  - Iniciar o container: `$ docker start learn-sql`
+  - Verificar os containers: `$ docker ps -a`
+  - Remover o container: `$ docker rm learn-sql`
+  - Remover a imagem: `$ docker rmi postgres:latest`
+  - Remover o volume: `$ docker volume rm learn-sql-data`
+
 ## Instalação do MySQL via Docker
 - Baixar imagem **mysql**: `$ docker pull mysql:latest`
 - Criar volume de dados: `$ docker volume create learn-sql-data`
@@ -77,13 +110,6 @@ $ docker run -d \
   - `-p 3306:3306` --> *porta do container*
   - `-v learn-sql-data:/var/lib/mysql` --> *volume de dados*
   - `mysql:latest` --> *imagem*
-- Acessar o container: `$ docker exec -it learn-sql bash`
-- Parar o container: `$ docker stop learn-sql`
-- Verificar os containers: `$ docker ps -a`
-- Iniciar o container: `$ docker start learn-sql`
-- Remover o container: `$ docker rm learn-sql`
-- Remover a imagem: `$ docker rmi mysql:latest`
-- Remover o volume: `$ docker volume rm learn-sql-data`
 
 ## Uso do mysql na linha de comando
 - Acessar o container: `$ docker exec -it learn-sql bash`
@@ -96,92 +122,92 @@ $ docker run -d \
 [↑ Index ↑](#index)
 
 ## Comandos DDL e DML
-*Comandos para criar, manipular e consultar dados em um banco de dados MySQL.* 
+*Comandos para criar, manipular e consultar dados em um banco de dados PostgresSQL.* 
 
->Você pode executar os comandos abaixo na sua instância do MySQL, \
+>Você pode executar os comandos abaixo na sua instância do PostgresSQL, \
 >seja via linha de comando ou utilizando uma interface gráfica.
 
 ### 1. Criação e Alteração de Tabelas
 
-#### 1.1 Criação da Tabela `marcas`
+#### 1.1 Criação da Tabela `brands`
 ```sql
-CREATE TABLE marcas (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Chave primária
-	nome VARCHAR(100) NOT NULL UNIQUE,     -- Tipo de dado com limite de caracteres e único
+CREATE TABLE brands (
+	id SERIAL PRIMARY KEY, -- Chave primária
+	name VARCHAR(100) NOT NULL UNIQUE,     -- Tipo de dado com limite de caracteres e único
 	size VARCHAR(100),
-	telefone VARCHAR(15)
+	phone VARCHAR(15)
 ); -- Ponto e vírgula para finalizar a query
 ```
 
-#### 1.2 Criação da Tabela `produtos`
+#### 1.2 Criação da Tabela `products`
 ```sql
-CREATE TABLE produtos (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Chave primária
-	nome VARCHAR(100) NOT NULL,             -- Tipo de dado e limite de caracteres
-	preco REAL,                           -- Tipo de dado com casas decimais
-	estoque INTEGER DEFAULT 0             -- Tipo de dado com valor padrão
+CREATE TABLE products (
+	id SERIAL PRIMARY KEY, -- Chave primária
+	name VARCHAR(100) NOT NULL,             -- Tipo de dado e limite de caracteres
+	price REAL,                           -- Tipo de dado com casas decimais
+	stock INTEGER DEFAULT 0             -- Tipo de dado com valor padrão
 ); -- Ponto e vírgula para finalizar a query
 ```
 
-#### 1.3 Alterações na Tabela `produtos`
+#### 1.3 Alterações na Tabela `products`
 - **Adicionar uma coluna:**
   ```sql
-  ALTER TABLE produtos ADD COLUMN id_marca INT NOT NULL;
+  ALTER TABLE products ADD COLUMN brand_id INT NOT NULL;
   ```
-- **Modificar o tipo de dado da coluna `nome`:**
+- **Modificar o tipo de dado da coluna `name`:**
   ```sql
-  ALTER TABLE produtos MODIFY COLUMN nome VARCHAR(150);
+  ALTER TABLE products ALTER COLUMN name TYPE VARCHAR(150);
   ```
 - **Adicionar uma chave estrangeira:**
   ```sql
-  ALTER TABLE produtos ADD FOREIGN KEY (id_marca) REFERENCES marcas(id);
+  ALTER TABLE products ADD FOREIGN KEY (brand_id) REFERENCES brands(id);
   ```
 
 #### 1.4 Outras Operações
-- **Criação da Tabela `controle`:**
+- **Criação da Tabela `control`:**
   ```sql
-  CREATE TABLE controle (
+  CREATE TABLE control (
 	  id INTEGER PRIMARY KEY,
-	  data_entrada DATE
+	  entry_date DATE
   );
   ```
-- **Remover a Tabela `controle`:**
+- **Remover a Tabela `control`:**
   ```sql
-  DROP TABLE controle;
+  DROP TABLE control;
   -- Ou de forma segura:
-  DROP TABLE IF EXISTS controle;
+  DROP TABLE IF EXISTS control;
   ```
-- **Criação de um índice na tabela `produtos`:**
+- **Criação de um índice na tabela `products`:**
   ```sql
-  CREATE INDEX idx_produtos_nome ON produtos (nome);
+  CREATE INDEX idx_products_name ON products (name);
   ```
-- **Modificar o nome da coluna `size` para `site` na tabela `marcas`:**
+- **Modificar o name da coluna `size` para `site` na tabela `brands`:**
   ```sql
-  ALTER TABLE marcas CHANGE COLUMN size site VARCHAR(100);
+  ALTER TABLE brands RENAME COLUMN size TO site;
   ```
 
 ---
 
 ## 2. Inserção de Dados (DML)
 
-#### 2.1 Inserindo Dados na Tabela `marcas`
+#### 2.1 Inserindo Dados na Tabela `brands`
 ```sql
-INSERT INTO marcas (nome, site, telefone)
+INSERT INTO brands (name, site, phone)
 VALUES
 	('Bose', 'http://bose.com', '(11) 99999-1111'),
 	('JBL', 'http://jbl.com.br', '(11) 88888-2222');
 ```
 
-#### 2.2 Inserindo Dados na Tabela `produtos`
+#### 2.2 Inserindo Dados na Tabela `products`
 - **Inserir omitindo a lista de campos:**
   ```sql
-  INSERT INTO produtos
+  INSERT INTO products
   VALUES
 	  (1, 'Produto 1', 10.5, 100, 1);
   ```
 - **Inserir especificando os campos:**
   ```sql
-  INSERT INTO produtos (nome, preco, estoque, id_marca)
+  INSERT INTO products (name, price, stock, brand_id)
   VALUES
 	  ('Bose QuietComfort 45', 379.99, 40, 1),
 	  ('Bose SoundSport', 299.99, 30, 1),
@@ -193,79 +219,79 @@ VALUES
 
 ### 3. Consultas de Dados
 
-#### 3.1 Seleção de Dados na Tabela `marcas`
+#### 3.1 Seleção de Dados na Tabela `brands`
 - **Consulta de todos os campos:**
   ```sql
-  SELECT * FROM marcas;
+  SELECT * FROM brands;
   ```
 - **Consulta de campos específicos:**
   ```sql
-  SELECT id, nome FROM marcas;
+  SELECT id, name FROM brands;
   ```
 - **Consulta com filtro WHERE:**
   ```sql
-  SELECT id, nome FROM marcas WHERE id = 1;
-  SELECT id, nome FROM marcas WHERE id > 1;
+  SELECT id, name FROM brands WHERE id = 1;
+  SELECT id, name FROM brands WHERE id > 1;
   ```
 - **Consulta com filtro combinado (AND):**
   ```sql
-  SELECT id, nome FROM marcas WHERE id > 1 AND id < 4;
+  SELECT id, name FROM brands WHERE id > 1 AND id < 4;
   ```
 
 ---
 
 ### 4. Criação de Tabela Derivada
 
-#### 4.1 Criação da Tabela `produtos_apple`
+#### 4.1 Criação da Tabela `products_apple`
 ```sql
-CREATE TABLE produtos_apple (
-	nome VARCHAR(150) NOT NULL,	
-	estoque INTEGER DEFAULT 0
+CREATE TABLE products_apple (
+	name VARCHAR(150) NOT NULL,	
+	stock INTEGER DEFAULT 0
 );
 ```
-- **Inserir dados baseados na tabela `produtos`:**
+- **Inserir dados baseados na tabela `products`:**
   ```sql
-  INSERT INTO produtos_apple
-  SELECT nome, estoque FROM produtos WHERE id_marca = 1;
+  INSERT INTO products_apple
+  SELECT name, stock FROM products WHERE brand_id = 1;
   ```
 - **Visualizar os dados:**
   ```sql
-  SELECT * FROM produtos_apple;
+  SELECT * FROM products_apple;
   ```
 - **Limpar e remover a tabela:**
   ```sql
-  TRUNCATE TABLE produtos_apple;
+  TRUNCATE TABLE products_apple;
   
-  DROP TABLE produtos_apple;
+  DROP TABLE products_apple;
   ```
 
 ---
 
 ### 5. Atualização e Exclusão de Dados
 
-#### 5.1 Atualização de Dados na Tabela `produtos`
-- **Atualização do nome de um produto:**
+#### 5.1 Atualização de Dados na Tabela `products`
+- **Atualização do name de um produto:**
   ```sql
-  UPDATE produtos
-  SET nome = 'JBL Flip 6 Black'
+  UPDATE products
+  SET name = 'JBL Flip 6 Black'
   WHERE id = 12;
   ```
-- **Atualização do estoque de todos os produtos:**
+- **Atualização do stock de todos os products:**
   ```sql
-  UPDATE produtos
-  SET estoque = estoque + 10;
+  UPDATE products
+  SET stock = stock + 10;
   ```
-- **Atualização do estoque de um produto específico:**
+- **Atualização do stock de um produto específico:**
   ```sql
-  UPDATE produtos
-  SET estoque = estoque + 1
+  UPDATE products
+  SET stock = stock + 1
   WHERE id = 3;
   ```
 
 #### 5.2 Exclusão de Dados
 - **Exclusão de um produto específico pelo ID:**
   ```sql
-  DELETE FROM produtos
+  DELETE FROM products
   WHERE id = 1;
   ```
 
@@ -274,31 +300,31 @@ CREATE TABLE produtos_apple (
 ### 6. Consultas Avançadas
 
 #### 6.1 Filtros e Ordenação
-- **Produtos com estoque menor que 100 e preço maior que 30:**
+- **products com stock menor que 100 e preço maior que 30:**
   ```sql
   SELECT *
-  FROM produtos
+  FROM products
   WHERE 
-	  estoque < 100
-	  AND preco > 30;
+	  stock < 100
+	  AND price > 30;
   ```
-- **Produtos com nome contendo "Flip":**
+- **products com name contendo "Flip":**
   ```sql
   SELECT *
-  FROM produtos
-  WHERE nome LIKE '%Flip%';
+  FROM products
+  WHERE name LIKE '%Flip%';
   ```
-- **Produtos ordenados por estoque (crescente):**
+- **products ordenados por stock (crescente):**
   ```sql
   SELECT *
-  FROM produtos
-  ORDER BY estoque ASC;
+  FROM products
+  ORDER BY stock ASC;
   ```
-- **Produtos ordenados por estoque (decrescente) limitando a 2 registros:**
+- **products ordenados por stock (decrescente) limitando a 2 registros:**
   ```sql
   SELECT *
-  FROM produtos
-  ORDER BY estoque DESC
+  FROM products
+  ORDER BY stock DESC
   LIMIT 2;
   ```
 
@@ -306,39 +332,39 @@ CREATE TABLE produtos_apple (
 
 ### 7. Trabalhando com Clientes e Pedidos
 
-#### 7.1 Criação das Tabelas `clientes`, `pedidos` e `itens_pedido`
+#### 7.1 Criação das Tabelas `customers`, `orders` e `order_items`
 ```sql
-CREATE TABLE clientes (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	nome VARCHAR(100) NOT NULL,
+CREATE TABLE customers (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
 	email VARCHAR(100) UNIQUE NOT NULL,
-	cidade VARCHAR(200),
-	data_nascimento DATE
+	city VARCHAR(200),
+	birth_date DATE
 );
 
-CREATE TABLE pedidos (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	data_pedido DATE DEFAULT (NOW()),
-	id_cliente INT,
-	valor_total REAL,
-	FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+CREATE TABLE orders (
+	id SERIAL PRIMARY KEY,
+	order_date DATE DEFAULT CURRENT_DATE,
+	customer_id INT,
+	total_value REAL,
+	FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
-CREATE TABLE itens_pedido (
-	id_pedido INT,
-	id_produto INT,
-	quantidade INT,
-	preco_unitario REAL,
-	FOREIGN KEY (id_pedido) REFERENCES pedidos(id),
-	FOREIGN KEY (id_produto) REFERENCES produtos(id),
-	PRIMARY KEY (id_pedido, id_produto)
+CREATE TABLE order_items (
+	order_id INT,
+	product_id INT,
+	quantity INT,
+	unit_price REAL,
+	FOREIGN KEY (order_id) REFERENCES orders(id),
+	FOREIGN KEY (product_id) REFERENCES products(id),
+	PRIMARY KEY (order_id, product_id)
 );
 ```
 
 #### 7.2 Inserção de Dados
-- **Clientes:**
+- **customers:**
   ```sql
-  INSERT INTO clientes (nome, email, cidade)
+  INSERT INTO customers (name, email, city)
   VALUES
 	  ('Carlos Silva', 'carlos.silva@example.com', 'São Paulo'),
 	  ('Mariana Costa', 'mariana.costa@example.com', 'Rio de Janeiro'),
@@ -348,60 +374,60 @@ CREATE TABLE itens_pedido (
 	  ('Maria Oliveira', 'maria@examplecom', 'São Paulo'),
 	  ('José Santos', 'josé@example.com', 'Rio de Janeiro');
   ```
-- **Pedidos:**
+- **orders:**
   ```sql
-  INSERT INTO pedidos (id_cliente, valor_total) VALUES
+  INSERT INTO orders (customer_id, total_value) VALUES
   (1, 5500.00),
   (2, 3500.00);
   ```
 - **Itens do Pedido:**
   ```sql
-  INSERT INTO itens_pedido (id_pedido, id_produto, quantidade, preco_unitario) VALUES
+  INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
   (1, 9, 1, 3500.00),
   (1, 10, 1, 2000.00),
   (2, 11, 1, 3500.00);
   ```
 
 #### 7.3 Consultas com JOINs
-- **INNER JOIN entre clientes e pedidos:**
+- **INNER JOIN entre customers e orders:**
   ```sql
   SELECT
-	  clientes.nome,
-	  pedidos.valor_total
-  FROM clientes
-  INNER JOIN pedidos ON clientes.id = pedidos.id_cliente;
+	  customers.name,
+	  orders.total_value
+  FROM customers
+  INNER JOIN orders ON customers.id = orders.customer_id;
   ```
 - **LEFT JOIN:**
   ```sql
   SELECT
-	  clientes.nome,
-	  pedidos.valor_total
-  FROM clientes
-  LEFT JOIN pedidos ON clientes.id = pedidos.id_cliente;
+	  customers.name,
+	  orders.total_value
+  FROM customers
+  LEFT JOIN orders ON customers.id = orders.customer_id;
   ```
 - **RIGHT JOIN:**
   ```sql
   SELECT
-	  clientes.nome,
-	  pedidos.valor_total
-  FROM clientes
-  RIGHT JOIN pedidos ON clientes.id = pedidos.id_cliente;
+	  customers.name,
+	  orders.total_value
+  FROM customers
+  RIGHT JOIN orders ON customers.id = orders.customer_id;
   ```
 - **FULL JOIN (simulado com UNION):**
   ```sql
   SELECT
-	  clientes.nome,
-	  pedidos.valor_total
-  FROM clientes
-  LEFT JOIN pedidos ON clientes.id = pedidos.id_cliente
+	  customers.name,
+	  orders.total_value
+  FROM customers
+  LEFT JOIN orders ON customers.id = orders.customer_id
   
   UNION
   
   SELECT
-	  clientes.nome,
-	  pedidos.valor_total
-  FROM clientes
-  RIGHT JOIN pedidos ON clientes.id = pedidos.id_cliente;
+	  customers.name,
+	  orders.total_value
+  FROM customers
+  RIGHT JOIN orders ON customers.id = orders.customer_id;
   ```
 
 ---
@@ -409,54 +435,56 @@ CREATE TABLE itens_pedido (
 ### 8. Consultas com Agregação e Subqueries
 
 #### 8.1 Agregações Básicas
-- **Contagem de clientes por cidade:**
+- **Contagem de customers por city:**
   ```sql
   SELECT
-	  cidade,
-	  COUNT(*) AS numero_clientes
-  FROM clientes
-  GROUP BY cidade;
+	  city,
+	  COUNT(*) AS customer_count
+  FROM customers
+  GROUP BY city;
   ```
 - **Média de vendas por mês:**
   ```sql
   SELECT
-	  DATE_FORMAT(data_pedido, '%Y-%m') AS mes,
-	  AVG(valor_total) AS media_vendas
-  FROM pedidos
-  GROUP BY mes;
+	  TO_CHAR(order_date, 'YYYY-MM') AS month,
+	  AVG(total_value) AS avg_sales
+  FROM orders
+  GROUP BY month;
   ```
 - **Outras funções de agregação:**
   ```sql
-  SELECT SUM(valor_total)/COUNT(valor_total) FROM pedidos;
-  SELECT MAX(valor_total) AS maior_pedido FROM pedidos;
-  SELECT MIN(valor_total) AS menor_pedido FROM pedidos;
+  SELECT SUM(total_value)/COUNT(total_value) FROM orders;
+  SELECT MAX(total_value) AS highest_order FROM orders;
+  SELECT MIN(total_value) AS lowest_order FROM orders;
   ```
 
 #### 8.2 Subquery e Filtragem na Agregação
-- **Consulta com subquery para produtos com estoque menor que a média:**
+- **Consulta com subquery para products com stock menor que a média:**
   ```sql
   SELECT
-	  nome,
-	  estoque
-  FROM produtos
-  WHERE estoque < (SELECT AVG(estoque) FROM produtos);
+	  name,
+	  stock
+  FROM products
+  WHERE stock < (SELECT AVG(stock) FROM products);
   ```
 - **Consulta com HAVING para filtrar agregações:**
   ```sql
   SELECT
-	  c.cidade,
-	  SUM(p.valor_total) AS total_vendas
-  FROM clientes AS c
-  INNER JOIN pedidos AS p ON c.id = p.id_cliente
-  WHERE c.cidade IN ('São Paulo', 'Rio de Janeiro')
-  GROUP BY c.cidade
-  HAVING total_vendas < 5000;
+	  c.city,
+	  SUM(p.total_value) AS total_sales
+  FROM customers AS c
+  INNER JOIN orders AS p ON c.id = p.customer_id
+  WHERE c.city IN ('São Paulo', 'Rio de Janeiro')
+  GROUP BY c.city
+  HAVING total_sales < 5000;
   ```
 
 ---
 
 ## Study resources
 - [Minicurso Codigo Fonte TV](https://youtu.be/dpanYy8IrcU?si=3a1uI7wQWzXujFqC)
-- > ***Estudar Banco de Dados relacionais***
+
+## Next steps
+- ***Estudar Banco de Dados relacionais***
 
 [↑ Index ↑](#index)
