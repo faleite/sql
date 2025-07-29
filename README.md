@@ -85,6 +85,16 @@ Structured Query Language
     postgres:latest
   ```
 
+### Flags 
+
+| Flag | Nome                 | Para que serve                                  |
+| ---- | -------------------- | ----------------------------------------------- |
+| `-e` | Environment variable | Passar variáveis de ambiente pro container      |
+| `-d` | Detached mode        | Rodar container em segundo plano (background)   |
+| `-v` | Volume               | Persistir dados mesmo após parar/deletar        |
+| `-p` | Port mapping         | Acessar o container pela porta local do sistema |
+
+
 ---
 
 ## Using PostgreSQL from the Command Line
